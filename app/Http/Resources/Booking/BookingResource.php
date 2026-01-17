@@ -24,6 +24,8 @@ class BookingResource extends JsonResource
             'apartment' => [
                 'id' => $this->apartment->id,
                 'name' => $this->apartment->name,
+                'rent' => $this->apartment->rent,
+                'image' => $this->apartment->image,
             ],
             // Tenant কে শুধুমাত্র ID এবং Name দিয়ে দেখানো হলো
             'tenant' => [

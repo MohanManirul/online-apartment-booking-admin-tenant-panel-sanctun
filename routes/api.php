@@ -21,23 +21,25 @@ Route::prefix('v1')->group(function () {
 
  
     Route::post('/tenant/login',[TenantController::class,'login']);
-   
+    
     Route::post('/admin/login',[AdminDashboardController::class,'adminLogin'])->name('login') ;
  
     Route::middleware('auth:sanctum')->group(function(){
 
         Route::post('logout',[TenantController::class,'logout']) ;
-        
-        Route::apiResource('tenants',TenantController::class);
-        Route::apiResource('bookings',BookingController::class);
-
-        Route::get('dashboard/summary',[DashboardController::class,'summary']);
+       Route::get('/bookings',[TenantController::class,'bookings'])->name('bookings') ;
     });
    
     Route::prefix('admin/dashboard')->middleware('auth:sanctum')->group(function(){        
         
         Route::post('logout',[AdminDashboardController::class,'logout']) ;
         Route::get('/data',[AdminDashboardController::class,'data'])->name('data') ;
+
+         
+        Route::apiResource('tenants',TenantController::class);
+        Route::apiResource('bookings',BookingController::class);
+
+        Route::get('dashboard/summary',[DashboardController::class,'summary']);
 
        Route::resource('apartments',ApartmentController::class);
     });

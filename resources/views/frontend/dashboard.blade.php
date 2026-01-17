@@ -45,10 +45,9 @@
                 <thead>
                 <tr>
                     <th>#</th>
-                    <th>Apartment</th>
+                    <th>Apartment Name</th>
                     <th>Rent</th>
-                    <th>Status</th>
-                    <th>Booked At</th>
+                    <th>Booked For</th>
                 </tr>
                 </thead>
                 <tbody id="bookingTable">
@@ -67,12 +66,15 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script>
+
+        
         const token = localStorage.getItem('tenant_token');
 
         if (!token) {
             window.location.href = "/tenant/login";
         }
 
+        loadBookings();
         async function loadBookings() {
             try {
                 let res = await axios.get('/api/v1/bookings', {
@@ -81,22 +83,25 @@
                     }
                 });
 
-                let bookings = res.data.data;
+                let bookings = res.data.data.data;
+                console.log(bookings);
+                
                 document.getElementById('totalBooking').innerText = bookings.length;
 
                 let rows = '';
-                bookings.forEach((b, index) => {
+                const dateOptions = { day: '2-digit', month: 'long', year: 'numeric' };
+                
+                bookings.forEach((b, index) => {                   
+
+                    const startDate = new Date(b.start_date).toLocaleDateString('en-GB', dateOptions);
+                    const endDate   = new Date(b.end_date).toLocaleDateString('en-GB', dateOptions);                    
+
                     rows += `
                         <tr>
                             <td>${index + 1}</td>
                             <td>${b.apartment.name}</td>
                             <td>৳ ${b.apartment.rent}</td>
-                            <td>
-                                <span class="badge ${b.status === 'approved' ? 'badge-approved' : 'badge-pending'}">
-                                    ${b.status}
-                                </span>
-                            </td>
-                            <td>${new Date(b.created_at).toLocaleDateString()}</td>
+                            <td>${startDate} to ${endDate}</td>
                         </tr>
                     `;
                 });
@@ -104,9 +109,8 @@
                 document.getElementById('bookingTable').innerHTML =
                     rows || `<tr><td colspan="5" class="text-center">No bookings found</td></tr>`;
 
-            } catch (e) {
-                console.error(e);
-                alert('Failed to load bookings');
+            } catch (error) {
+                console.log(error.message);
             }
         }
 
@@ -121,7 +125,7 @@
         });
     }
 
-    loadBookings();
+    
     </script>
 </body>
 </html>

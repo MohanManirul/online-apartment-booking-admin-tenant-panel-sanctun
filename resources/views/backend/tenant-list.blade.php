@@ -114,13 +114,10 @@
                         <tr>
                             <th>#</th>
                             <th>Name</th>
-                            <th>Rent</th>
-                            <th>Image</th>
-                            <th>Status</th>
-                            <th width="160">Action</th>
+                            <th>Mobile</th>
                         </tr>
                     </thead>
-                    <tbody id="apartment-data">
+                    <tbody id="tenant-data">
                         {{-- comes from api call --}}
                     </tbody>
                 </table>
@@ -151,7 +148,7 @@
                     'Authorization': 'Bearer ' + token
                 }
             });
-             
+            console.log(response);
             let data = response.data.data.data;
             document.getElementById('totalTenant').innerText = data.length;
             
@@ -181,7 +178,7 @@
            
 
         try {
-            let URL = '/api/v1/admin/dashboard/data';
+            let URL = '/api/v1/admin/dashboard/tenants';
 
             let response = await axios.get(URL,{
                 headers: {
@@ -189,41 +186,17 @@
                 }
             });
 
+            console.log(response);
+            
 
-
-            let data = response.data['data'];
-            console.log(data);
-            document.getElementById('apartmet').innerText = data.length;
+            let data = response.data.data.data;
             data.forEach((item, index )=>{
-                 // Dynamic status badge
-                let statusBadge = '';
-                if( item.status === 0){
-                    statusBadge = `<span class="badge bg-success">Available</span>`;
-                } else if(item.status === 1){
-                    statusBadge = `<span class="badge bg-danger">Booked</span>`;
-                }
-
-                  // Image preview
-                let imageHtml = '';
-                if(item.image){
-                    imageHtml = `<img src="/storage/${item.image}" alt="${item.name}" style="max-width: 80px; height:auto; border-radius:4px;">`;
-                }
-
-                document.getElementById('apartment-data').innerHTML +=(`
+               
+                document.getElementById('tenant-data').innerHTML +=(`
                 <tr>
                     <td>${index + 1}</td>
                     <td>${item['name']}</td>
-                    <td>৳ ${item['rent']}</td>
-                    <td>${imageHtml}</td>
-                    <td>${statusBadge}</td>
-                    <td>
-                        <a class="btn btn-sm btn-warning" href="/admin/dashboard/apartment/${item.id}/edit">
-                            <i class="bi bi-pencil"></i>
-                        </a>
-                        <button class="btn btn-sm btn-danger"  onclick="deleteApartment(${item.id})">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </td>
+                    <td>৳ ${item['phone']}</td>                   
 
                  </tr>
             `)
@@ -233,7 +206,7 @@
                 localStorage.removeItem('token');
                 window.location = "/login";
             }else {
-                alert('Failed to load Apartments.');
+                alert('Failed to load Tenants.');
                 console.log(error);
             }
         }

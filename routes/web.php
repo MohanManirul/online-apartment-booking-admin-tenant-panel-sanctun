@@ -33,6 +33,10 @@ Route::get('/admin/login', function(){
 Route::get('/admin/dashboard', function(){
     return view('backend.dashboard') ;
 });
+ 
+Route::get('/admin/dashboard/tenant-list', function(){
+    return view('backend.tenant-list') ;
+});
 
 Route::get('/admin/dashboard/apartment/create', function(){
     return view('backend.create') ;
