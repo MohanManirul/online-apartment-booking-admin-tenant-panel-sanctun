@@ -3,13 +3,14 @@
 namespace App\Models;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable; 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Tenant extends Authenticatable
 {
-   use HasApiTokens ;
+   use HasApiTokens,Notifiable;
     
-    protected $fillable = ['name','phone','image','password'];
+    protected $fillable = ['name','phone','email','image','password'];
 
     public function bookings()
     {

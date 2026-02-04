@@ -27,6 +27,7 @@ Route::prefix('v1')->group(function () {
     Route::middleware('auth:sanctum')->group(function(){
 
         Route::post('logout',[TenantController::class,'logout']) ;
+        Route::post('api/v1/bookings', [BookingController::class, 'index']);
        Route::get('/bookings',[TenantController::class,'bookings'])->name('bookings') ;
     });
    
@@ -37,8 +38,8 @@ Route::prefix('v1')->group(function () {
 
          
         Route::apiResource('tenants',TenantController::class);
+        
         Route::apiResource('bookings',BookingController::class);
-
         Route::get('dashboard/summary',[DashboardController::class,'summary']);
 
        Route::resource('apartments',ApartmentController::class);

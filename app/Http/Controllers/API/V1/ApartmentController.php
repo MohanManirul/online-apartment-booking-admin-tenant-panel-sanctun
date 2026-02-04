@@ -5,9 +5,15 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Apartment\StoreApartmentRequest;
 use App\Http\Resources\Apartment\ApartmentCollection;
+use App\Jobs\SendApartmentCreatedEmailJob;
+use App\Jobs\SendSingleApartmentNotificationJob;
 use App\Models\Apartment;
+use App\Models\Tenant;
 use Exception;
+use Illuminate\Bus\Batch;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Bus;
+use Throwable;
 
 class ApartmentController extends Controller
 {
@@ -51,8 +57,30 @@ class ApartmentController extends Controller
                 'image' => $imagePath
             ]);
 
+            // SendApartmentCreatedEmailJob::dispatch($apartment)->delay(now()->addMinutes(2));
+            $tenants = Tenant::all(); // যে সকল Tenant কে notify করতে হবে
+            $jobs = [];
+
+            foreach ($tenants as $tenant) {
+            $jobs[] = (new SendSingleApartmentNotificationJob($apartment, $tenant))
+                        ->delay(now()->addMinutes(1)); // queue delay
+                }
+                
+             // Batch dispatch
+        Bus::batch($jobs)
+            ->then(function (Batch $batch) {
+                \Log::info('All notifications sent successfully!');
+            })
+            ->catch(function (Batch $batch, Throwable $e) {
+                \Log::error('Some notifications failed: '.$e->getMessage());
+            })
+            ->finally(function (Batch $batch) {
+                \Log::info('Notification batch finished!');
+            })
+            ->dispatch();
+
             return response()->json([
-                'message' => 'Apartment created successfully',
+                'message' => 'Apartment created and notification batch started!',
                 'data' => $apartment
             ], 201);
 

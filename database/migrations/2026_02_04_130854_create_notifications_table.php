@@ -8,16 +8,15 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     */ 
+     */
     public function up(): void
     {
-        Schema::create('tenants', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('phone', 11)->unique();
-            $table->string('password');
-            $table->string('image')->nullable();
+        Schema::create('notifications', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('type');
+            $table->morphs('notifiable');
+            $table->text('data');
+            $table->timestamp('read_at')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tenants');
+        Schema::dropIfExists('notifications');
     }
 };

@@ -1,0 +1,5 @@
+MAIL_MAILER=smtp
+MAIL_HOST=sandbox.smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=a389fdfe2a167e
+MAIL_PASSWORD=67513aed3ae5f5

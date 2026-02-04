@@ -4,6 +4,7 @@ use App\Http\Controllers\API\V1\AdminApartmentController;
 use App\Http\Controllers\API\V1\AdminDashboardController;
 use App\Http\Controllers\API\V1\ApartmentController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
 
 Route::get('/', function () {   
     return view('frontend.index');
@@ -46,6 +47,9 @@ Route::get('/admin/dashboard/apartment/{id}/edit', function(){
     return view('backend.edit') ;
 });
 
-
+Route::get('/jobs', function() {
+    $jobs = DB::table('jobs')->get();
+    return $jobs; // JSON হিসেবে browser এ দেখাবে
+});
 
 

@@ -100,7 +100,7 @@ public function register(StoreTenantRequest $request)
    
        
     }
-
+ 
     public function store(StoreTenantRequest $request)
     {
         $validatedData = $request->validated();
@@ -115,6 +115,7 @@ public function register(StoreTenantRequest $request)
                 'image' => $imagePath
             ]);
 
+            
             return response()->json([
                 'message' => 'tenant created successfully',
                 'data' => $tenant
