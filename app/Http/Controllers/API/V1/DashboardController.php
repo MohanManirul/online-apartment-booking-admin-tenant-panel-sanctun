@@ -23,7 +23,24 @@ class DashboardController extends Controller
             ),
         ]);
     }
+
+    // Latest 5 notifications + unread count
+    public function dashboardNotifications()
+    {
+        $tenant = auth()->user();
+        // $tenant = auth('sanctum')->id();
+
+        $notifications = $tenant->notifications()->latest()->take(5)->get();
+        $unread_count = $tenant->unreadNotifications()->count();
+
+        return response()->json([
+            'notifications' => $notifications,
+            'unread_count' => $unread_count
+        ]);
+    }
+
 }
+ 
 
 /*
 অর্থাৎ, whereHas('currentBooking') → শুধু সেই Apartmentগুলো নির্বাচন করবে যাদের বর্তমানে Booking আছে।

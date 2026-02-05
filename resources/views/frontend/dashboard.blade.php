@@ -22,6 +22,21 @@
     <button class="btn btn-light btn-sm" onclick="logout()">Logout</button>
 </nav>
 
+<!-- Notifications -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header fw-bold d-flex justify-content-between">
+                🔔 Notifications
+                <span class="badge bg-danger" id="unreadCount">0</span>
+            </div>
+            <ul class="list-group list-group-flush" id="notificationList">
+                <li class="list-group-item text-muted text-center">Loading...</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
 <div class="container mt-4">
 
     <!-- Summary -->
@@ -124,8 +139,44 @@
             window.location.href = "/tenant/login";
         });
     }
+// load Notifications
+loadNotifications(); // 👈 add this
 
-    
+async function loadNotifications() {
+    try {
+        let res = await axios.get('/api/v1/notifications', {
+            headers: {
+                Authorization: 'Bearer ' + token
+            }
+        });
+        console.log(res);
+        
+        const notifications = res.data.notifications;
+        const unreadCount = res.data.unread_count;
+
+        document.getElementById('unreadCount').innerText = unreadCount;
+
+        let list = '';
+
+        if (notifications.length === 0) {
+            list = `<li class="list-group-item text-center text-muted">No notifications</li>`;
+        } else {
+            notifications.forEach(n => {
+                list += `
+                    <li class="list-group-item">
+                        <strong>${n.data.message}</strong><br>
+                        <small class="text-muted">${new Date(n.created_at).toLocaleString()}</small>
+                    </li>
+                `;
+            });
+        }
+
+        document.getElementById('notificationList').innerHTML = list;
+
+    } catch (error) {
+        console.log(error);
+    }
+}
     </script>
 </body>
 </html>

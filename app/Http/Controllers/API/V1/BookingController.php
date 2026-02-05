@@ -59,8 +59,13 @@ class BookingController extends Controller
                 'status' => 1
             ]);
 
+            
+
             // Commit transaction
             DB::commit();
+
+            // Trigger event
+            // event(new \App\Events\ApartmentBooked($booking));
 
             return new BookingResource($booking);
 
